@@ -8,7 +8,6 @@ from django.http import JsonResponse
 def client_list(request): 
     if request.method == 'POST':
         serializer = clientSerializer(data=request.data)
-        #return Response(serializer.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=201)
