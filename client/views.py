@@ -43,6 +43,6 @@ def delete_client(request, pk):
         client_instance = Client.objects.get(pk=pk)
     except Client.DoesNotExist:
         return Response(status=404)
-
+    #Delete user
     client_instance.delete()
     return Response("deleted",status=204)
