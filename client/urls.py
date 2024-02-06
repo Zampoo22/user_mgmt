@@ -1,11 +1,9 @@
 from django.urls import path
-from . import views
-
-urlpatterns = [ 
-    path("user", views.client_list),
-    path("user/<int:id>", views.get_client_detail, name="get employee detail")
-    ,path('user_update/<int:pk>', views.update_client_detail)
-    ,path('user/delete/<int:pk>', views.delete_client)
-]
+from .views import EmployeeProfileViewSet
+from rest_framework.routers import DefaultRouter
+# from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 
+router = DefaultRouter()
+router.register('employee', EmployeeProfileViewSet, basename="employee")
+urlpatterns = router.urls
