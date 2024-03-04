@@ -1,15 +1,18 @@
 from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework import status
-from .models import Employee, EmployeeProfile
-
-from .serializers import EmployeeSerializer, EmployeeProfileSerializer
+from .models import EmployeeProfile
+from .serializers import EmployeeProfileSerializer
 
 class EmployeeProfileViewSet(viewsets.ModelViewSet):
     queryset = EmployeeProfile.objects.all()
-    serializer_class = EmployeeProfileSerializer 
-    permission_classes = []
-    authentication_classes = []
+    serializer_class = EmployeeProfileSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+        if not user.employee_type == 'Manager':
+            return queryset.filter(employee=user)
+        return queryset
+
     
 #****json code******
 # class EmployeeAPIView(viewsets.ViewSet):

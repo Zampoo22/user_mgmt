@@ -5,13 +5,18 @@ class SuccessJSONRender(JSONRenderer):
             action = (renderer_context['view'].action)
         except AttributeError:
             action = 'retrive'
-        if 'detail' not in data:
-            status_code = renderer_context['response'].status_code
-            success_data = {
-                'status_code': status_code,
-                'message': f"Data is Succesfully {action}ed",
-                'data': data
-            }
-            return super().render(success_data, accepted_media_type, renderer_context)
-        return super().render(data, accepted_media_type, renderer_context)
+        
+        action = action[:-1] if action[-1] == 'e' else action
+        message = f"Data is succesfully {action}ed"
+
+        if 'detail' in data:
+            message = f"An error occured."
+
+        status_code = renderer_context['response'].status_code
+        success_data = {
+            'status_code': status_code,
+            'message': message,
+            'data': data
+        }
+        return super().render(success_data, accepted_media_type, renderer_context)
     

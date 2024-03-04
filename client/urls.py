@@ -5,5 +5,5 @@ from rest_framework.routers import DefaultRouter
 
 
 router = DefaultRouter()
-router.register('employee', EmployeeProfileViewSet, basename="employee")
+router.register('employees', EmployeeProfileViewSet, basename="employees")
 urlpatterns = router.urls

@@ -1,10 +1,14 @@
 from django.db import models 
+from django.contrib.auth.models import AbstractUser
 
-class Employee(models.Model):  
-    first_name = models.CharField(max_length=100) 
-    last_name = models.CharField(max_length=100) 
+class Employee(AbstractUser):  
     email = models.EmailField(unique=True) 
     phone_number = models.CharField(max_length=15)  
+    EMPLOYEE_TYPE_CHOICES = [
+        ('Employee', 'Employee'),
+        ('Manager', 'Manager'),
+    ]
+    employee_type = models.CharField(max_length=9, choices=EMPLOYEE_TYPE_CHOICES, default='Employee')
     
 class Team(models.Model):    
     team_name = models.CharField(max_length=255) 

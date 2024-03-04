@@ -2,10 +2,23 @@ from dataclasses import field
 from rest_framework import serializers
 from .models import Employee,Team,EmployeeProfile
 from django.core.mail import send_mail
+
 class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
-        fields = '__all__'
+        exclude = ('is_superuser', 'is_staff', 'groups', 'user_permissions')
+        extra_kwargs = {
+            "password": {'write_only': True}
+        }
+
+
+    def create(self, validated_data):
+        password = validated_data.pop("password")
+        instance =  super().create(validated_data)
+        instance.set_password(password)
+        instance.save()
+        return instance
+
                 
 class EmployeeProfileSerializer(serializers.ModelSerializer):
     employee = EmployeeSerializer()
@@ -19,7 +32,7 @@ class EmployeeProfileSerializer(serializers.ModelSerializer):
         employee =  self.fields.get('employee').create(employee_data)
         validated_data['employee'] = employee
         team_name = validated_data.pop('team')
-        team,created = Team.objects.get_or_create(team_name=team_name)
+        team, created = Team.objects.get_or_create(team_name=team_name)
         validated_data['team'] = team
         profile = super().create(validated_data)
         send_mail(
@@ -30,7 +43,6 @@ class EmployeeProfileSerializer(serializers.ModelSerializer):
             )
         return profile
     
-        
     
     def update(self, instance, validate_data):
         employee_data = validate_data.pop('employee', None)
